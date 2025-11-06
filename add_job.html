@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加岗位 - IT岗位求职记录系统</title>
+    <!-- 添加Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 添加Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#6b7280',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .btn-primary {
+                @apply bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-all;
+            }
+            .btn-secondary {
+                @apply bg-secondary text-white px-4 py-2 rounded-md hover:bg-secondary/90 transition-all;
+            }
+            .form-input {
+                @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary;
+            }
+            .form-label {
+                @apply block text-sm font-medium text-gray-700 mb-1;
+            }
+            .form-error {
+                @apply text-danger text-xs mt-1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('index') }}" class="flex items-center">
+                        <i class="fa fa-briefcase text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">IT岗位求职记录系统</h1>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <main class="flex-grow max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 页面标题 -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">添加新岗位</h2>
+            <p class="mt-1 text-gray-600">请填写以下信息添加新的岗位记录</p>
+        </div>
+
+        <!-- 添加岗位表单 -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">岗位信息</h3>
+            </div>
+            <div class="px-6 py-5">
+                <form method="POST" action="{{ url_for('add_job') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- 企业名称 -->
+                    <div class="mb-6">
+                        {{ form.company_name.label(class="form-label") }}
+                        {{ form.company_name(class="form-input", placeholder="请输入企业名称") }}
+                        {% for error in form.company_name.errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- 岗位名称 -->
+                    <div class="mb-6">
+                        {{ form.job_title.label(class="form-label") }}
+                        {{ form.job_title(class="form-input", placeholder="请输入岗位名称") }}
+                        {% for error in form.job_title.errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- 薪资 -->
+                    <div class="mb-6">
+                        {{ form.salary.label(class="form-label") }}
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500">¥</span>
+                            </div>
+                            {{ form.salary(class="form-input pl-8", placeholder="请输入月薪") }}
+                        </div>
+                        {% for error in form.salary.errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- 工作地点 -->
+                    <div class="mb-6">
+                        {{ form.location.label(class="form-label") }}
+                        {{ form.location(class="form-input", placeholder="请输入工作地点") }}
+                    </div>
+                    
+                    <!-- 具体要求 -->
+                    <div class="mb-6">
+                        {{ form.requirements.label(class="form-label") }}
+                        {{ form.requirements(class="form-input h-32", placeholder="请输入岗位要求") }}
+                        {% for error in form.requirements.errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- 岗位职责 -->
+                    <div class="mb-6">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-input h-32", placeholder="请输入岗位职责") }}
+                    </div>
+                    
+                    <!-- 申请状态 -->
+                    <div class="mb-6">
+                        {{ form.status.label(class="form-label") }}
+                        <select name="status" class="form-input">
+                            <option value="未申请" selected>未申请</option>
+                            <option value="已申请">已申请</option>
+                            <option value="面试中">面试中</option>
+                            <option value="已录用">已录用</option>
+                            <option value="已拒绝">已拒绝</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 表单按钮 -->
+                    <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+                        <a href="{{ url_for('index') }}" class="btn-secondary">
+                            <i class="fa fa-arrow-left mr-2"></i>返回列表
+                        </a>
+                        {{ form.submit(class="btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            <p>IT岗位求职记录系统 &copy; 2024 | 姓名：罗茂锟 | 学号：20234272</p>
+        </div>
+    </footer>
+</body>
+</html>
